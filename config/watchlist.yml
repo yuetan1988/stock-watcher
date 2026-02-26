@@ -1,0 +1,30 @@
+# Stock Watchlist Configuration
+# Each stock can have its own strategy settings
+
+stocks:
+  PPLT:
+    name: "Aberdeen Standard Physical Platinum Shares ETF"
+    enabled: true
+    strategies:
+      ma_crossover:
+        enabled: true
+        fast_period: 5
+        slow_period: 20
+
+  SPY:
+    name: "SPDR S&P 500 ETF"
+    enabled: true
+    strategies:
+      ma_crossover:
+        enabled: true
+        fast_period: 5
+        slow_period: 20
+
+  VDY.TO:
+    name: "Vanguard FTSE Canadian High Dividend Yield Index ETF (TSX)"
+    enabled: true
+    strategies:
+      ma_crossover:
+        enabled: true
+        fast_period: 5
+        slow_period: 20
