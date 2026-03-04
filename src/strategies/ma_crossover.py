@@ -17,6 +17,8 @@ class Signal:
     signal_type: str        # "BUY" or "SELL"
     strategy: str
     price: float
+    prev_price: float
+    price_change_pct: float
     fast_ma: float
     slow_ma: float
     fast_period: int
@@ -55,6 +57,8 @@ def run(ticker: str, df: pd.DataFrame, fast_period: int = 5, slow_period: int = 
     slow_yesterday = yesterday[f"MA{slow_period}"]
 
     current_price = today["Close"]
+    prev_price = yesterday["Close"]
+    price_change_pct = ((current_price - prev_price) / prev_price) * 100
     date_str = str(today.name.date()) if hasattr(today.name, 'date') else str(today.name)
 
     # Detect crossover
@@ -63,30 +67,39 @@ def run(ticker: str, df: pd.DataFrame, fast_period: int = 5, slow_period: int = 
 
     if golden_cross:
         msg = (
-            f"🟢 *BUY Signal* — {ticker}\n"
+            f"📈 *MARKET SUMMARY* — {ticker}\n"
+            f"Current Price: ${current_price:.2f}\n"
+            f"Previous Price: ${prev_price:.2f}\n"
+            f"Change: *{price_change_pct:+.2f}%*\n\n"
+            f"🟢 *SUGGESTION: BUY* — {ticker}\n"
             f"Strategy: MA Crossover (MA{fast_period} / MA{slow_period})\n"
             f"Date: {date_str}\n"
             f"Price: ${current_price:.2f}\n"
             f"MA{fast_period}: ${fast_today:.2f}  ↑ crossed above\n"
             f"MA{slow_period}: ${slow_today:.2f}\n"
         )
-        return Signal(ticker, "BUY", "ma_crossover", current_price,
+        return Signal(ticker, "BUY", "ma_crossover", current_price, prev_price, price_change_pct,
                       fast_today, slow_today, fast_period, slow_period, date_str, msg)
 
     elif death_cross:
         msg = (
-            f"🔴 *SELL Signal* — {ticker}\n"
+            f"📈 *MARKET SUMMARY* — {ticker}\n"
+            f"Current Price: ${current_price:.2f}\n"
+            f"Previous Price: ${prev_price:.2f}\n"
+            f"Change: *{price_change_pct:+.2f}%*\n\n"
+            f"🔴 *SUGGESTION: SELL* — {ticker}\n"
             f"Strategy: MA Crossover (MA{fast_period} / MA{slow_period})\n"
             f"Date: {date_str}\n"
             f"Price: ${current_price:.2f}\n"
             f"MA{fast_period}: ${fast_today:.2f}  ↓ crossed below\n"
             f"MA{slow_period}: ${slow_today:.2f}\n"
         )
-        return Signal(ticker, "SELL", "ma_crossover", current_price,
+        return Signal(ticker, "SELL", "ma_crossover", current_price, prev_price, price_change_pct,
                       fast_today, slow_today, fast_period, slow_period, date_str, msg)
 
     else:
-        # No crossover, but log current state
+        # No crossover, but log current state with price info
         direction = "above" if fast_today > slow_today else "below"
-        print(f"  [{ticker}] No signal. MA{fast_period}={fast_today:.2f} is {direction} MA{slow_period}={slow_today:.2f}")
+        price_change_pct = ((current_price - prev_price) / prev_price) * 100
+        print(f"  [{ticker}] No signal. Price: ${current_price:.2f} ({price_change_pct:+.2f}%), MA{fast_period}={fast_today:.2f} is {direction} MA{slow_period}={slow_today:.2f}")
         return None

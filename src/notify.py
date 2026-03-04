@@ -54,7 +54,10 @@ def send_summary(signals: list, scanned_count: int):
     else:
         msg = (
             f"📊 *Daily Scan — {today}*\n"
-            f"No signals today. Scanned {scanned_count} stock(s).\n"
+            f"📈 *MARKET SUMMARY*\n"
+            f"Scanned {scanned_count} stock(s) - No trading signals detected today.\n\n"
+            f"🔍 *SUGGESTION*\n"
+            f"Hold current positions or wait for new signals.\n"
             f"_Monitoring: MA Crossover strategy_"
         )
 
