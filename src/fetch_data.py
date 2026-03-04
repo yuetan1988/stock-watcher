@@ -25,15 +25,12 @@ def fetch_stock_data(ticker: str, period_days: int = 100) -> pd.DataFrame:
     """
     Fetch recent OHLCV data for a given ticker.
     We fetch 100 days by default to have enough history for MA calculations.
+    Uses relative time period to avoid issues with incorrect system dates.
     """
-    end_date = datetime.today()
-    start_date = end_date - timedelta(days=period_days)
-
-    print(f"  Fetching {ticker} from {start_date.date()} to {end_date.date()}...")
+    print(f"  Fetching {ticker} (last {period_days} days)...")
 
     stock = yf.Ticker(ticker)
-    df = stock.history(start=start_date.strftime("%Y-%m-%d"),
-                       end=end_date.strftime("%Y-%m-%d"))
+    df = stock.history(period=f"{period_days}d")
 
     if df.empty:
         print(f"  WARNING: No data returned for {ticker}")

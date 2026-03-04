@@ -11,6 +11,19 @@ A GitHub Actions-based stock signal scanner. It fetches daily OHLCV data, runs c
 - **pyyaml** — watchlist config parsing
 - **GitHub Actions** — scheduler (runs Mon–Fri after market close)
 
+## Quick
+
+- setup environment
+```
+source .venv/bin/activate
+```
+
+- run
+```
+cd src
+python main.py
+```
+
 ## Project Structure
 ```
 stock-signal-bot/
